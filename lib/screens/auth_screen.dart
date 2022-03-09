@@ -7,6 +7,7 @@ import '../models/http_exception.dart';
 import '../providers/auth.dart';
 import '../widgets/error_dialog.dart';
 
+// ignore: constant_identifier_names
 enum AuthMode { Signup, Login }
 
 class AuthScreen extends StatelessWidget {
@@ -98,7 +99,7 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
-  Map<String, String> _authData = {
+  final Map<String, String> _authData = {
     'email': '',
     'password': '',
   };
@@ -140,7 +141,6 @@ class _AuthCardState extends State<AuthCard> {
       }
       ErrorDialog.openDialog(context, errorMessage);
     } catch (error) {
-      print(error);
       const errorMessage =
           'Could not authenticate you. Please try again later.';
       ErrorDialog.openDialog(context, errorMessage);

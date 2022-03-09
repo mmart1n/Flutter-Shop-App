@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
 import '../providers/cart.dart';
+import '../providers/products_provider.dart';
 import '../screens/product_detail_screen.dart';
 import '../providers/product.dart';
 
@@ -49,6 +50,8 @@ class ProductItem extends StatelessWidget {
                 try {
                   await product.toggleFavoriteStatus(
                       authData.token, authData.userId);
+                  Provider.of<ProductsProvider>(context, listen: false)
+                      .updateItems();
                 } catch (error) {
                   scaffold.showSnackBar(
                     const SnackBar(
