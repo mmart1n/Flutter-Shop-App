@@ -125,6 +125,7 @@ class _AuthCardState extends State<AuthCard> {
           _authData['email'] as String,
           _authData['password'] as String,
         );
+        Navigator.of(context).pushReplacementNamed('/');
       }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed.';

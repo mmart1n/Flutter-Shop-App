@@ -13,12 +13,12 @@ class UserProductsScreen extends StatelessWidget {
 
   Future<void> _refreshProducts(BuildContext context) async {
     await Provider.of<ProductsProvider>(context, listen: false)
-        .fetchAndSetProducts();
+        .fetchAndSetProducts(filterByUser: true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<ProductsProvider>(context);
+    // print('building');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Products'),
@@ -32,27 +32,38 @@ class UserProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: const AppDrawer(),
-      body: productsData.items.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const <Widget>[
-                    Text(
-                      'An error occurred!',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Divider(),
-                    Text('Please check your internet connection'),
-                    Text('or try again later!'),
-                  ],
-                ),
-              ),
-            )
-          : RefreshIndicator(
-              onRefresh: () => _refreshProducts(context),
-              child: Padding(
+      body:
+          // productsData.items.isEmpty
+          //     ? Center(
+          //         child: Padding(
+          //           padding: const EdgeInsets.all(30.0),
+          //           child: Column(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             children: const <Widget>[
+          //               Text(
+          //                 'An error occurred!',
+          //                 style: TextStyle(fontWeight: FontWeight.bold),
+          //               ),
+          //               Divider(),
+          //               Text('Please check your internet connection'),
+          //               Text('or try again later!'),
+          //             ],
+          //           ),
+          //         ),
+          //       )
+          //     :
+          FutureBuilder(
+        future: _refreshProducts(context),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return RefreshIndicator(
+            onRefresh: () => _refreshProducts(context),
+            child: Consumer<ProductsProvider>(
+              builder: (ctx, productsData, _) => Padding(
                 padding: const EdgeInsets.all(8),
                 child: ListView.builder(
                   itemBuilder: (_, i) => Column(
@@ -69,6 +80,9 @@ class UserProductsScreen extends StatelessWidget {
                 ),
               ),
             ),
+          );
+        },
+      ),
     );
   }
 }

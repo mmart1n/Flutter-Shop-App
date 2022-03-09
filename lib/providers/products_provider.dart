@@ -47,15 +47,23 @@ class ProductsProvider with ChangeNotifier {
 
   ProductsProvider(this.authToken, this.userId, this._items);
 
-  Future<void> fetchAndSetProducts() async {
+  Future<void> fetchAndSetProducts({bool filterByUser = false}) async {
+    dynamic params;
+    if (!filterByUser) {
+      params = {
+        'auth': authToken,
+      };
+    } else {
+      params = {
+        'auth': authToken,
+        'orderBy': json.encode("creatorId"),
+        'equalTo': json.encode(userId),
+      };
+    }
     var url = Uri.https(
       'flutter-shop-app-d806a-default-rtdb.europe-west1.firebasedatabase.app',
       '/products.json',
-      {
-        'orderBy': '"creatorId"',
-        'equalTo': '"$userId"',
-        'auth': authToken,
-      },
+      params,
     );
     try {
       final response = await http.get(url);
