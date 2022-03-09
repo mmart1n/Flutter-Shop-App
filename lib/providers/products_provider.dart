@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../models/helper.dart';
 import '../models/http_exception.dart';
 import './product.dart';
 
@@ -51,6 +52,8 @@ class ProductsProvider with ChangeNotifier {
       'flutter-shop-app-d806a-default-rtdb.europe-west1.firebasedatabase.app',
       '/products.json',
       {
+        'orderBy': '"creatorId"',
+        'equalTo': '"$userId"',
         'auth': authToken,
       },
     );
@@ -83,8 +86,10 @@ class ProductsProvider with ChangeNotifier {
         loadedProducts.add(product);
       });
       _items = loadedProducts;
+      Helper.productsLoadingFailed = false;
       notifyListeners();
     } catch (error) {
+      Helper.productsLoadingFailed = true;
       rethrow;
     }
   }
@@ -117,6 +122,7 @@ class ProductsProvider with ChangeNotifier {
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
+          'creatorId': userId,
         }),
       );
       final newProduct = Product(
