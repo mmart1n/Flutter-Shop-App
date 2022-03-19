@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 
 // import '../helpers/custom_route.dart';
 import '../providers/auth.dart';
+import '../providers/theme_provider.dart';
 import '../screens/orders_screen.dart';
 import '../screens/user_products_screen.dart';
+import 'theme_dialog.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -48,6 +50,31 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(UserProductsScreen.routeName);
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [Icon(Icons.light_mode)],
+            ),
+            title: const Text('Theme'),
+            subtitle: Consumer<ThemeProvider>(
+              builder: (context, value, child) => Text(value.themeMode),
+            ),
+            onTap: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return const ThemeDialog();
+                },
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
+                  ),
+                ),
+              );
             },
           ),
           const Divider(),

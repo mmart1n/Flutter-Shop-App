@@ -13,6 +13,7 @@ import './screens/auth_screen.dart';
 import './screens/edit_product_screen.dart';
 import 'providers/auth.dart';
 // import './helpers/custom_route.dart';
+import 'providers/theme_provider.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
@@ -39,14 +40,17 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => Cart(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
         ChangeNotifierProxyProvider<Auth, Orders>(
           create: (_) => Orders('', '', []),
           update: ((ctx, auth, orderData) => Orders(auth.token ?? '',
               auth.userId ?? '', orderData == null ? [] : orderData.orders)),
         ),
       ],
-      child: Consumer<Auth>(
-        builder: ((ctx, auth, _) {
+      child: Consumer2<Auth, ThemeProvider>(
+        builder: ((ctx, auth, themeProvider, _) {
           ifAuth(targetScreen) {
             if (auth.isAuth) {
               return targetScreen;
@@ -70,11 +74,21 @@ class MyApp extends StatelessWidget {
               //   },
               // ),
             ),
+            darkTheme: ThemeData.dark(),
+            themeMode: themeProvider.themeMode == 'System'
+                ? ThemeMode.system
+                : themeProvider.themeMode == 'Dark'
+                    ? ThemeMode.dark
+                    : ThemeMode.light,
             home: auth.isAuth
                 ? const ProductsOverviewScreen()
                 : FutureBuilder(
-                    future: auth.tryAutoLogin(),
-                    builder: (ctx, authResultShanpshot) {
+                    future: Future.wait([
+                      auth.tryAutoLogin(),
+                      themeProvider.getSelectedTheme()
+                    ]),
+                    builder:
+                        (ctx, AsyncSnapshot<List<Object>> authResultShanpshot) {
                       if (authResultShanpshot.connectionState ==
                           ConnectionState.waiting) {
                         return const SplashScreen();
