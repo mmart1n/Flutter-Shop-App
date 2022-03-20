@@ -78,6 +78,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             builder: (_, cart, ch) => Badge(
               child: ch ?? const SizedBox(),
               value: cart.itemCount.toString(),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.blue
+                  : Theme.of(context).colorScheme.secondary,
             ),
             child: IconButton(
               icon: const Icon(

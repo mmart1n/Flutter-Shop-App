@@ -65,6 +65,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
                   .copyWith(secondary: Colors.deepOrange),
+              brightness: Brightness.light,
               fontFamily: 'Lato',
               // use to apply different page transitions for all screens
               // pageTransitionsTheme: PageTransitionsTheme(
@@ -74,7 +75,9 @@ class MyApp extends StatelessWidget {
               //   },
               // ),
             ),
-            darkTheme: ThemeData.dark(),
+            darkTheme: ThemeData.dark().copyWith(
+              brightness: Brightness.dark,
+            ),
             themeMode: themeProvider.themeMode == 'System'
                 ? ThemeMode.system
                 : themeProvider.themeMode == 'Dark'
